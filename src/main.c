@@ -105,6 +105,12 @@ pin_init(void) {
 int
 main(void) {
 
+    // Make sure the main oscillator is enabled because this is required by
+    // the PHY.  The system must have a 25MHz crystal attached to the OSC
+    // pins.  The SYSCTL_MOSC_HIGHFREQ parameter is used when the crystal
+    // frequency is 10MHz or higher.
+    SysCtlMOSCConfigSet(SYSCTL_MOSC_HIGHFREQ);
+
     // Run from the PLL at 120 MHz.
     g_ui32SysClock = MAP_SysCtlClockFreqSet((SYSCTL_XTAL_25MHZ |
                                              SYSCTL_OSC_MAIN |
@@ -114,12 +120,6 @@ main(void) {
 
     // Initialize the device pinout appropriately for this board.
     pin_init();
-
-    // Make sure the main oscillator is enabled because this is required by
-    // the PHY.  The system must have a 25MHz crystal attached to the OSC
-    // pins.  The SYSCTL_MOSC_HIGHFREQ parameter is used when the crystal
-    // frequency is 10MHz or higher.
-    SysCtlMOSCConfigSet(SYSCTL_MOSC_HIGHFREQ);
 
     // Create the LED task.
     if (LEDTaskInit() != 0) {
